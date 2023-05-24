@@ -4,6 +4,7 @@ import time
 import keyboard
 import win32api
 import win32con
+import win32console
 import win32gui
 
 
@@ -36,6 +37,7 @@ def shoot():
 
 
 def main():
+    win32gui.ShowWindow(win32console.GetConsoleWindow(), win32con.SW_HIDE)
     exit_flag = False
 
     def on_key_press(event):
