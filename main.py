@@ -1,4 +1,5 @@
 import math
+import sys
 import time
 
 import keyboard
@@ -37,30 +38,40 @@ def shoot():
 
 
 def main():
-    win32gui.ShowWindow(win32console.GetConsoleWindow(), win32con.SW_HIDE)
-    exit_flag = False
+    try:
+        win32console.SetConsoleTitle("PixelClick")
+        win32gui.ShowWindow(win32console.GetConsoleWindow(), win32con.SW_HIDE)
+        print("PixelClick is running...")
+        exit_flag = False
 
-    def on_key_press(event):
-        nonlocal exit_flag
-        if event.name == "+":
-            exit_flag = True
+        def on_key_press(event):
+            nonlocal exit_flag
+            if event.name == "+":
+                exit_flag = True
 
-    keyboard.on_press(on_key_press)  # Register the key press event handler
+        keyboard.on_press(on_key_press)  # Register the key press event handler
 
-    while not exit_flag:
-        if win32api.GetKeyState(win32con.VK_RBUTTON) < 0:
-            active_title = get_active_window_title()
-            if "FiveM" in active_title:
-                while win32api.GetKeyState(win32con.VK_RBUTTON) < 0:
-                    color = get_pixel_color(
-                        win32api.GetSystemMetrics(0) // 2,
-                        win32api.GetSystemMetrics(1) // 2,
-                    )
-                    if (
-                        color_distance(color, (196, 79, 79)) < 205
-                    ):  # Adjust the color distance threshold as needed
-                        shoot()
-                    time.sleep(0.01)  # Adjust the loop delay as needed
+        while not exit_flag:
+            if win32api.GetKeyState(win32con.VK_RBUTTON) < 0:
+                active_title = get_active_window_title()
+                if "FiveM" in active_title:
+                    while win32api.GetKeyState(win32con.VK_RBUTTON) < 0:
+                        color = get_pixel_color(
+                            win32api.GetSystemMetrics(0) // 2,
+                            win32api.GetSystemMetrics(1) // 2,
+                        )
+                        if (
+                            color_distance(color, (196, 79, 79)) < 205
+                        ):  # Adjust the color distance threshold as needed
+                            shoot()
+                        time.sleep(0.01)  # Adjust the loop delay as needed
+
+    except KeyboardInterrupt:
+        sys.exit()
+
+    except Exception as e:
+        print(e)
+        sys.exit()
 
 
 if __name__ == "__main__":
