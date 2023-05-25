@@ -1,0 +1,19 @@
+
+
+S hold
+0.25s Delay
+{SPACE} Hold
+0.12s Delay
+S Release
+D Hold
+0.25s Delay
+W Hold
+{SPACE} Release
+0.04s Delay
+A Hold
+0.05s Delay
+D Release
+0.03s Delay
+W Release
+0.15s Delay
+A Release
