@@ -1,6 +1,9 @@
 # PixelClick
 Pixel Detection for the Grand Theft Auto V (FiveM) Crosshair when it turns red, it shoots.
 
+# Install
+pip install winpy32 keyboard
+
 # Info
 The old.ahk is the file it original, that was written in AutoHotKeyV2 (AHK) and later changed to Python3
 
