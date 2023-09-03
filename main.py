@@ -43,7 +43,7 @@ class TrayIcon:
         height = 64
         color1 = "black"
         color2 = "white"
-        image = Image.new('RGB', (width, height), color1)
+        image = Image.new("RGB", (width, height), color1)
         dc = ImageDraw.Draw(image)
         dc.rectangle([(width // 2, 0), (width, height)], fill=color2)
         return image
@@ -75,16 +75,25 @@ class PixelClick:
         keyboard.on_press(self.on_key_press)
         while not self.exit_flag:
             active_title = self.get_active_window_title()
-            if "FiveM" in active_title:
+            if "FiveM" or "RedM" in active_title:
                 if win32api.GetKeyState(win32con.VK_RBUTTON) < 0:
                     while win32api.GetKeyState(win32con.VK_RBUTTON) < 0:
                         color = ColorUtils.get_pixel_color(
                             win32api.GetSystemMetrics(0) // 2,
                             win32api.GetSystemMetrics(1) // 2,
                         )
-                        if ColorUtils.color_distance(color, (196, 79, 79)) < 205:
-                            self.shoot()
-                        time.sleep(0.01)
+                        if "FiveM" in active_title:
+                            if ColorUtils.color_distance(color, (196, 79, 79)) < 205:
+                                self.shoot()
+                        elif (
+                            "RedM" in active_title
+                        ):  ## White: 225, 225, 225, Gray: 123, 123, 123, Red: 242, 16, 45, Dark Red: 140, 0, 0
+                            if (
+                                ColorUtils.color_distance(color, (242, 16, 45)) < 20
+                                or ColorUtils.color_distance(color, (140, 0, 0)) < 20
+                            ):
+                                self.shoot()
+                        time.sleep(0.03)
             else:
                 time.sleep(1)
 
@@ -94,18 +103,15 @@ def exit_action(icon):
     pxl_exit(0)
 
 
-def open_url():
-    print("Opening website...")
-
-
 def main():
     try:
         win32console.SetConsoleTitle("PixelClick")
         win32gui.ShowWindow(win32console.GetConsoleWindow(), win32con.SW_HIDE)
         print("PixelClick is running...")
 
-        menu = (pystray.MenuItem('Open URL', open_url),
-                pystray.MenuItem('Exit', exit_action))
+        menu = (
+            pystray.MenuItem("Exit", exit_action),
+        )
         tray_icon = TrayIcon("PixelClick", "PixelClick", menu)
         icon_thread = threading.Thread(target=tray_icon.run)
         icon_thread.start()
