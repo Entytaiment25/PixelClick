@@ -10,4 +10,9 @@ The old.ahk is the file it original, that was written in AutoHotKeyV2 (AHK) and 
 # Keybinds
 Press **+** to exit the app. You can change that in the config.py
 
+# Known Issues
+- Some Testers reporting it's not 100% working on their device
+- Not Reshade Compatible (technicolor,...) 
+
+
 # This was only made for education.
