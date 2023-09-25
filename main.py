@@ -4,6 +4,7 @@ import threading
 import time
 
 import keyboard
+import pyautogui
 import pystray
 import win32api
 import win32con
@@ -12,6 +13,9 @@ import win32gui
 from PIL import Image, ImageDraw
 
 import config
+
+# Get the screen resolution dynamically
+SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
 
 pxl_exit = os._exit
 
@@ -75,22 +79,22 @@ class PixelClick:
         keyboard.on_press(self.on_key_press)
         while not self.exit_flag:
             active_title = self.get_active_window_title()
-            if "FiveM" or "RedM" in active_title:
+            if "FiveM" in active_title or "RedM" in active_title:
                 if win32api.GetKeyState(win32con.VK_RBUTTON) < 0:
                     while win32api.GetKeyState(win32con.VK_RBUTTON) < 0:
-                        color = ColorUtils.get_pixel_color(
-                            win32api.GetSystemMetrics(0) // 2,
-                            win32api.GetSystemMetrics(1) // 2,
-                        )
+                        # Calculate coordinates based on screen resolution
+                        x = SCREEN_WIDTH // 2
+                        y = SCREEN_HEIGHT // 2
+                        color = ColorUtils.get_pixel_color(x, y)
+
+                        # Adjust your logic here based on screen resolution
                         if "FiveM" in active_title:
                             if ColorUtils.color_distance(color, (196, 79, 79)) < 205:
                                 self.shoot()
-                        elif (
-                            "RedM" in active_title
-                        ):  ## White: 225, 225, 225, Gray: 123, 123, 123, Red: 242, 16, 45, Dark Red: 140, 0, 0
+                        elif "RedM" in active_title:
                             if (
                                 ColorUtils.color_distance(color, (242, 16, 45)) < 20
-                                or ColorUtils.color_distance(color, (140, 0, 0)) < 20
+                                or ColorUtils.color_distance(color, (140, 0, 0)) < 120
                             ):
                                 self.shoot()
                         time.sleep(0.03)
@@ -109,9 +113,7 @@ def main():
         win32gui.ShowWindow(win32console.GetConsoleWindow(), win32con.SW_HIDE)
         print("PixelClick is running...")
 
-        menu = (
-            pystray.MenuItem("Exit", exit_action),
-        )
+        menu = (pystray.MenuItem("Exit", exit_action),)
         tray_icon = TrayIcon("PixelClick", "PixelClick", menu)
         icon_thread = threading.Thread(target=tray_icon.run)
         icon_thread.start()
