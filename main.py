@@ -12,7 +12,25 @@ import win32console
 import win32gui
 from PIL import Image, ImageDraw
 
-import config
+config_file = "config.toml"
+config = {}
+
+VERSION = "1.1.7"
+
+if not os.path.isfile(config_file) or os.path.getsize(config_file) == 0:
+    default_config = f'VERSION = "{VERSION}"\n' 'EXIT_KEY = "+"\n' "CLICK_SHOOT = false"
+
+    with open(config_file, "w") as f:
+        f.write(default_config)
+else:
+    with open(config_file, "r") as f:
+        for line in f:
+            key, value = line.strip().split(" = ")
+            config[key] = value
+
+EXIT_KEY = config.get("EXIT_KEY", "+")
+CLICK_SHOOT = config.get("CLICK_SHOOT", "false")
+
 
 # Get the screen resolution dynamically
 SCREEN_WIDTH, SCREEN_HEIGHT = pyautogui.size()
@@ -71,7 +89,7 @@ class PixelClick:
         win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, 0, 0, 0, 0)
 
     def on_key_press(self, event):
-        if event.name == config.EXIT_KEY:
+        if event.name == EXIT_KEY:
             self.exit_flag = True
             pxl_exit(0)
 
@@ -81,15 +99,19 @@ class PixelClick:
             active_title = self.get_active_window_title()
             if "FiveM" in active_title or "RedM" in active_title:
                 if win32api.GetKeyState(win32con.VK_RBUTTON) < 0:
+                    if CLICK_SHOOT is True:
+                        time.sleep(0.03)
+                        self.shoot()
                     while win32api.GetKeyState(win32con.VK_RBUTTON) < 0:
                         # Calculate coordinates based on screen resolution
                         x = SCREEN_WIDTH // 2
                         y = SCREEN_HEIGHT // 2
                         color = ColorUtils.get_pixel_color(x, y)
 
-                        # Adjust your logic here based on screen resolution
                         if "FiveM" in active_title:
-                            if ColorUtils.color_distance(color, (196, 79, 79)) < 205:
+                            if (
+                                ColorUtils.color_distance(color, (196, 83, 75)) < 20
+                            ):  # 205
                                 self.shoot()
                         elif "RedM" in active_title:
                             if (
@@ -141,3 +163,4 @@ if __name__ == "__main__":
             pxl_exit(0)
     except Exception as e:
         print(f"An error occurred: {e}")
+        pxl_exit(0)

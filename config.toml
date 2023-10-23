@@ -1,0 +1,3 @@
+VERSION = "1.1.7"
+EXIT_KEY = "+"
+CLICK_SHOOT = false
