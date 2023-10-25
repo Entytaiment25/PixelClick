@@ -16,7 +16,7 @@ config_file = "config.toml"
 config = {}
 
 NAME = "PixelClick"
-VERSION = "1.1.7"
+VERSION = "1.1.8"
 
 if NAME != "PixelClick":
     NAME = "PixelClick"
