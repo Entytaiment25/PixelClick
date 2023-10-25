@@ -15,7 +15,13 @@ from PIL import Image, ImageDraw
 config_file = "config.toml"
 config = {}
 
+NAME = "PixelClick"
 VERSION = "1.1.7"
+
+if NAME != "PixelClick":
+    NAME = "PixelClick"
+else:
+    pass
 
 if not os.path.isfile(config_file) or os.path.getsize(config_file) == 0:
     default_config = f'VERSION = "{VERSION}"\n' 'EXIT_KEY = "+"\n' "CLICK_SHOOT = false"
@@ -28,8 +34,13 @@ else:
             key, value = line.strip().split(" = ")
             config[key] = value
 
-EXIT_KEY = config.get("EXIT_KEY", "+")
+EXIT_KEY = config.get("EXIT_KEY", "+").replace('"', "")
 CLICK_SHOOT = config.get("CLICK_SHOOT", "false")
+
+if config.get("CLICK_SHOOT", "true"):
+    CLICK_SHOOT = True
+else:
+    CLICK_SHOOT = False
 
 
 # Get the screen resolution dynamically
@@ -102,6 +113,10 @@ class PixelClick:
                     if CLICK_SHOOT is True:
                         time.sleep(0.03)
                         self.shoot()
+                        time.sleep(0.03)
+                        self.shoot()
+                        time.sleep(0.03)
+                        self.shoot()
                     while win32api.GetKeyState(win32con.VK_RBUTTON) < 0:
                         # Calculate coordinates based on screen resolution
                         x = SCREEN_WIDTH // 2
@@ -131,12 +146,12 @@ def exit_action(icon):
 
 def main():
     try:
-        win32console.SetConsoleTitle("PixelClick")
+        win32console.SetConsoleTitle(NAME)
         win32gui.ShowWindow(win32console.GetConsoleWindow(), win32con.SW_HIDE)
-        print("PixelClick is running...")
+        print(f"{NAME} is running...")
 
         menu = (pystray.MenuItem("Exit", exit_action),)
-        tray_icon = TrayIcon("PixelClick", "PixelClick", menu)
+        tray_icon = TrayIcon(NAME, NAME, menu)
         icon_thread = threading.Thread(target=tray_icon.run)
         icon_thread.start()
 
