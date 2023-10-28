@@ -39,7 +39,7 @@ CLICK_SHOOT = config.get("CLICK_SHOOT", "false")
 
 if config.get("CLICK_SHOOT", "true"):
     CLICK_SHOOT = True
-else:
+if config.get("CLICK_SHOOT", "false"):
     CLICK_SHOOT = False
 
 
